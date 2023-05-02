@@ -23,7 +23,7 @@ export const FACTORY_ADDRESS = ''
 
 export const FACTORY_ADDRESS_MAP = {
   [ChainId.MAINNET]: FACTORY_ADDRESS,
-  [ChainId.TESTNET]: '0x2a597810b8b7bab485ab2cb2a3c38b58d9224e6d'
+  [ChainId.TESTNET]: '0x86ae11207eed9c11e68d3c684751d51196e94b39'
 }
 
 export const INIT_CODE_HASH = ''

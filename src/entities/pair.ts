@@ -30,6 +30,8 @@ export class Pair {
   private readonly tokenAmounts: [TokenAmount, TokenAmount]
 
   public static getAddress(tokenA: Token, tokenB: Token): string {
+    console.log('tokenB:', tokenB.address);
+    console.log('tokenA:', tokenA.address);
     const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA] // does safety checks
 
     const key = composeKey(token0, token1)
@@ -45,6 +47,7 @@ export class Pair {
       }
     }
 
+    console.log(PAIR_ADDRESS_CACHE[key])
     return PAIR_ADDRESS_CACHE[key]
   }
 

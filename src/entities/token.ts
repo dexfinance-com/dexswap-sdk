@@ -76,7 +76,7 @@ export const WETH = {
   ),
   [ChainId.TESTNET]: new Token(
     ChainId.TESTNET,
-    '0x7163d4abd89b19179ffbfe2554d4030a3bfd74d2',
+    '0xD1489f4c801647D7c6912d694011854221296cF1',
     18,
     'WETH',
     'Wrapped ETH',
