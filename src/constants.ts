@@ -23,14 +23,14 @@ export const FACTORY_ADDRESS = ''
 
 export const FACTORY_ADDRESS_MAP = {
   [ChainId.MAINNET]: FACTORY_ADDRESS,
-  [ChainId.TESTNET]: '0x86ae11207eed9c11e68d3c684751d51196e94b39'
+  [ChainId.TESTNET]: '0x107969c68f01dd1b22647d32af680234982457a4'
 }
 
 export const INIT_CODE_HASH = ''
 
 export const INIT_CODE_HASH_MAP = {
   [ChainId.MAINNET]: INIT_CODE_HASH,
-  [ChainId.TESTNET]: '0x17a8d8f5154575440d5e7bc0af09ec3241b6bd99aa995f7e86f60366f64f86f0'
+  [ChainId.TESTNET]: '0xc905a2e51d60ee30c0c7c90b180c0d9e405bdd99290342ddb243ad46be86667c'
 }
 
 export const MINIMUM_LIQUIDITY = JSBI.BigInt(1000)
@@ -43,7 +43,7 @@ export const THREE = JSBI.BigInt(3)
 export const FIVE = JSBI.BigInt(5)
 export const TEN = JSBI.BigInt(10)
 export const _100 = JSBI.BigInt(100)
-export const FEES_NUMERATOR = JSBI.BigInt(9975)
+// export const FEES_NUMERATOR = JSBI.BigInt(9975)
 export const FEES_DENOMINATOR = JSBI.BigInt(10000)
 
 export enum SolidityType {

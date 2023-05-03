@@ -102,6 +102,19 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "share",
+        "type": "uint256"
+      }
+    ],
+    "name": "ProtocolShareUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "sender",
@@ -226,7 +239,7 @@
   },
   {
     "inputs": [],
-    "name": "MINIMUM_LIQUIDITY",
+    "name": "MAX_PROTOCOL_SHARE",
     "outputs": [
       {
         "internalType": "uint256",
@@ -239,7 +252,7 @@
   },
   {
     "inputs": [],
-    "name": "MIN_FEE",
+    "name": "MINIMUM_LIQUIDITY",
     "outputs": [
       {
         "internalType": "uint256",
@@ -457,17 +470,17 @@
     "outputs": [
       {
         "internalType": "uint112",
-        "name": "_reserve0",
+        "name": "reserve0",
         "type": "uint112"
       },
       {
         "internalType": "uint112",
-        "name": "_reserve1",
+        "name": "reserve1",
         "type": "uint112"
       },
       {
         "internalType": "uint256",
-        "name": "_blockTimestampLast",
+        "name": "blockTimestampLast",
         "type": "uint256"
       }
     ],
@@ -615,6 +628,19 @@
   {
     "inputs": [],
     "name": "price1CumulativeLast",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "protocolShare",
     "outputs": [
       {
         "internalType": "uint256",
@@ -820,6 +846,25 @@
       }
     ],
     "name": "updateFee",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "share",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateProtocolShare",
     "outputs": [
       {
         "internalType": "bool",
