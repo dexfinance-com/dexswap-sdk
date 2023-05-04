@@ -27,7 +27,9 @@ const composeKey = (token0: Token, token1: Token) => `${token0.chainId}-${token0
 export class Pair {
   public readonly liquidityToken: Token
   private readonly tokenAmounts: [TokenAmount, TokenAmount]
-  private readonly swapFractionAfterFee: JSBI
+  private readonly swapFee: JSBI
+  private readonly _swapFractionAfterFee: JSBI
+  private readonly _protocolFeeShare: JSBI
 
   public static getAddress(tokenA: Token, tokenB: Token): string {
     const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA] // does safety checks
@@ -48,7 +50,7 @@ export class Pair {
     return PAIR_ADDRESS_CACHE[key]
   }
 
-  public constructor(tokenAmountA: TokenAmount, tokenAmountB: TokenAmount, swapFractionAfterFee: JSBI) {
+  public constructor(tokenAmountA: TokenAmount, tokenAmountB: TokenAmount, swapFee: JSBI, protocolFeeShare: JSBI) {
     const tokenAmounts = tokenAmountA.token.sortsBefore(tokenAmountB.token) // does safety checks
       ? [tokenAmountA, tokenAmountB]
       : [tokenAmountB, tokenAmountA]
@@ -60,7 +62,9 @@ export class Pair {
       'DexSwap LPs'
     )
     this.tokenAmounts = tokenAmounts as [TokenAmount, TokenAmount]
-    this.swapFractionAfterFee = swapFractionAfterFee
+    this._swapFractionAfterFee = JSBI.subtract(FEES_DENOMINATOR, swapFee)
+    this._protocolFeeShare = protocolFeeShare
+    this.swapFee = swapFee
   }
 
   /**
@@ -117,6 +121,14 @@ export class Pair {
     return this.tokenAmounts[1]
   }
 
+  public get swapFractionAfterFee(): JSBI {
+    return this._swapFractionAfterFee
+  }
+
+  public get protocolFeeShare(): JSBI {
+    return this._protocolFeeShare
+  }
+
   public reserveOf(token: Token): TokenAmount {
     invariant(this.involvesToken(token), 'TOKEN')
     return token.equals(this.token0) ? this.reserve0 : this.reserve1
@@ -129,7 +141,7 @@ export class Pair {
     }
     const inputReserve = this.reserveOf(inputAmount.token)
     const outputReserve = this.reserveOf(inputAmount.token.equals(this.token0) ? this.token1 : this.token0)
-    const inputAmountWithFee = JSBI.multiply(inputAmount.raw, this.swapFractionAfterFee)
+    const inputAmountWithFee = JSBI.multiply(inputAmount.raw, this._swapFractionAfterFee)
     const numerator = JSBI.multiply(inputAmountWithFee, outputReserve.raw)
     const denominator = JSBI.add(JSBI.multiply(inputReserve.raw, FEES_DENOMINATOR), inputAmountWithFee)
     const outputAmount = new TokenAmount(
@@ -139,7 +151,12 @@ export class Pair {
     if (JSBI.equal(outputAmount.raw, ZERO)) {
       throw new InsufficientInputAmountError()
     }
-    return [outputAmount, new Pair(inputReserve.add(inputAmount), outputReserve.subtract(outputAmount), this.swapFractionAfterFee)]
+    return [outputAmount, new Pair(
+      inputReserve.add(inputAmount),
+      outputReserve.subtract(outputAmount),
+      this.swapFee,
+      this.protocolFeeShare
+    )]
   }
 
   public getInputAmount(outputAmount: TokenAmount): [TokenAmount, Pair] {
@@ -155,12 +172,20 @@ export class Pair {
     const outputReserve = this.reserveOf(outputAmount.token)
     const inputReserve = this.reserveOf(outputAmount.token.equals(this.token0) ? this.token1 : this.token0)
     const numerator = JSBI.multiply(JSBI.multiply(inputReserve.raw, outputAmount.raw), FEES_DENOMINATOR)
-    const denominator = JSBI.multiply(JSBI.subtract(outputReserve.raw, outputAmount.raw), this.swapFractionAfterFee)
+    const denominator = JSBI.multiply(
+      JSBI.subtract(outputReserve.raw, outputAmount.raw),
+      this._swapFractionAfterFee
+    );
     const inputAmount = new TokenAmount(
       outputAmount.token.equals(this.token0) ? this.token1 : this.token0,
       JSBI.add(JSBI.divide(numerator, denominator), ONE)
     )
-    return [inputAmount, new Pair(inputReserve.add(inputAmount), outputReserve.subtract(outputAmount), this.swapFractionAfterFee)]
+    return [inputAmount, new Pair(
+      inputReserve.add(inputAmount),
+      outputReserve.subtract(outputAmount),
+      this.swapFee,
+      this.protocolFeeShare
+    )]
   }
 
   public getLiquidityMinted(
