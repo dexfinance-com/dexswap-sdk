@@ -1,6 +1,7 @@
 import { Pair } from './entities/pair';
 import { ChainId } from './constants';
 import { Token } from './entities/token';
+import JSBI from 'jsbi';
 /**
  * Contains methods for constructing instances of pairs and tokens from on-chain data.
  */
@@ -24,5 +25,5 @@ export declare abstract class Fetcher {
      * @param tokenB second token
      * @param provider the provider to use to fetch the data
      */
-    static fetchPairData(tokenA: Token, tokenB: Token, provider?: import("@ethersproject/providers").BaseProvider): Promise<Pair>;
+    static fetchPairData(tokenA: Token, tokenB: Token, swapFee: JSBI, protocolFeeShare: JSBI, provider?: import("@ethersproject/providers").BaseProvider): Promise<Pair>;
 }

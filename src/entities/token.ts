@@ -12,7 +12,7 @@ export class Token extends Currency {
   public readonly projectLink?: string
 
   public constructor(
-    chainId: ChainId,
+    chainId: number,
     address: string,
     decimals: number,
     symbol?: string,

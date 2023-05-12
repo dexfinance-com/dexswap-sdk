@@ -774,7 +774,7 @@ var Pair = /*#__PURE__*/function () {
   function Pair(tokenAmountA, tokenAmountB, swapFee, protocolFeeShare) {
     var tokenAmounts = tokenAmountA.token.sortsBefore(tokenAmountB.token) // does safety checks
     ? [tokenAmountA, tokenAmountB] : [tokenAmountB, tokenAmountA];
-    this.liquidityToken = new Token(tokenAmounts[0].token.chainId, Pair.getAddress(tokenAmounts[0].token, tokenAmounts[1].token), 18, 'DexSwap-LP', 'DexSwap LPs');
+    this.liquidityToken = new Token(Number(tokenAmounts[0].token.chainId), Pair.getAddress(tokenAmounts[0].token, tokenAmounts[1].token), 18, 'DexSwap-LP', 'DexSwap LPs');
     this.tokenAmounts = tokenAmounts;
     this._swapFractionAfterFee = JSBI.subtract(FEES_DENOMINATOR, swapFee);
     this._protocolFeeShare = protocolFeeShare;
@@ -2484,7 +2484,7 @@ var Fetcher = /*#__PURE__*/function () {
    */
   ;
 
-  Fetcher.fetchPairData = function fetchPairData(tokenA, tokenB, provider) {
+  Fetcher.fetchPairData = function fetchPairData(tokenA, tokenB, swapFee, protocolFeeShare, provider) {
     try {
       if (provider === undefined) provider = getDefaultProvider(getNetwork(tokenA.chainId));
       !(tokenA.chainId === tokenB.chainId) ? process.env.NODE_ENV !== "production" ? invariant(false, 'CHAIN_ID') : invariant(false) : void 0;
@@ -2493,7 +2493,7 @@ var Fetcher = /*#__PURE__*/function () {
         var reserves0 = _ref[0],
             reserves1 = _ref[1];
         var balances = tokenA.sortsBefore(tokenB) ? [reserves0, reserves1] : [reserves1, reserves0];
-        return new Pair(new TokenAmount(tokenA, balances[0]), new TokenAmount(tokenB, balances[1]));
+        return new Pair(new TokenAmount(tokenA, balances[0]), new TokenAmount(tokenB, balances[1]), swapFee, protocolFeeShare);
       });
     } catch (e) {
       return Promise.reject(e);

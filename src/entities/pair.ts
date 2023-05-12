@@ -55,7 +55,7 @@ export class Pair {
       ? [tokenAmountA, tokenAmountB]
       : [tokenAmountB, tokenAmountA]
     this.liquidityToken = new Token(
-      tokenAmounts[0].token.chainId,
+      Number(tokenAmounts[0].token.chainId),
       Pair.getAddress(tokenAmounts[0].token, tokenAmounts[1].token),
       18,
       'DexSwap-LP',
